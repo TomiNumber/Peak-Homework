@@ -1,13 +1,20 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { StockService } from './stock.service';
-import { beforeEach, describe, it, expect } from '@jest/globals';
+import { FinnhubService } from './finnhub/finnhub.service';
+import { beforeEach, describe, it, expect, jest } from '@jest/globals';
 
 describe('StockService', () => {
   let service: StockService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [StockService],
+      providers: [
+        StockService,
+        {
+          provide: FinnhubService,
+          useValue: { getQuote: jest.fn() },
+        },
+      ],
     }).compile();
 
     service = module.get<StockService>(StockService);
@@ -17,4 +24,3 @@ describe('StockService', () => {
     expect(service).toBeDefined();
   });
 });
-

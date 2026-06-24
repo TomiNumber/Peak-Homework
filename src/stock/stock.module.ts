@@ -3,6 +3,6 @@ import { StockService } from './stock.service';
 import { FinnhubService } from './finnhub/finnhub.service';
 
 @Module({
-  providers: [StockService, FinnhubService]
+  providers: [StockService, FinnhubService],
 })
 export class StockModule {}
