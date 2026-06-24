@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Log files
+logs/
+
+# dotenv environment variable files
+.env
+.env.*
+!.env.example
+
+# TypeScript incremental compilation
+*.tsbuildinfo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
