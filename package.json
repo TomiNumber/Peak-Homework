@@ -1,6 +1,6 @@
 {
   "name": "advanced-stock-price-checker",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Advanced Stock Price Checker",
   "author": "Tamas Janos Szabo",
   "scripts": {
