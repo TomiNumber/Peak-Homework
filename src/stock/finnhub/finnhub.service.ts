@@ -15,10 +15,7 @@ const DEFAULT_BASE_URL = 'https://finnhub.io/api/v1';
 export class FinnhubService {
   constructor(private readonly config: ConfigService) {
     this.apiKey = this.config.get<string>('FINNHUB_API_KEY', '');
-    this.baseUrl = this.config.get<string>(
-      'FINNHUB_BASE_URL',
-      DEFAULT_BASE_URL,
-    );
+    this.baseUrl = DEFAULT_BASE_URL;
 
     if (!this.apiKey) {
       this.logger.warn('Finnhub API key is not set.');
