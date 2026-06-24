@@ -5,3 +5,12 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+model StockPrice {
+  id        Int      @id @default(autoincrement())
+  symbol    String
+  price     Float
+  timestamp DateTime @default(now())
+
+  @@index([symbol, timestamp])
+}
