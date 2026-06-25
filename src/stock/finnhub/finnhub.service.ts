@@ -16,10 +16,6 @@ export class FinnhubService {
   constructor(private readonly config: ConfigService) {
     this.apiKey = this.config.get<string>('FINNHUB_API_KEY', '');
     this.baseUrl = DEFAULT_BASE_URL;
-
-    if (!this.apiKey) {
-      this.logger.warn('Finnhub API key is not set.');
-    }
   }
   private readonly logger = new Logger(FinnhubService.name);
   private readonly apiKey: string;
@@ -33,22 +29,15 @@ export class FinnhubService {
     try {
       const response = await fetch(url.toString());
       const result = await response.json();
-
       if (!response.ok) {
         const reason = result.error ?? response.statusText;
         if (response.status === 401 || response.status === 403) {
           this.logger.error(`Finnhub auth failed (${response.status})`);
-          throw new UnauthorizedException(
-            'Finnhub auth failed (check API key).',
-          );
+          throw new UnauthorizedException('Finnhub auth failed - (check API key).');
         }
 
-        this.logger.warn(
-          `Finnhub returned ${response.status} for "${symbol}": ${reason}`,
-        );
-        throw new BadGatewayException(
-          `Finnhub error for "${symbol}" (${response.status}): ${reason}`,
-        );
+        this.logger.warn(`Finnhub returned ${response.status} for "${symbol}": ${reason}`);
+        throw new BadGatewayException(`Finnhub error for "${symbol}" (${response.status}): ${reason}`);
       }
 
       return result as FinnhubQuote;

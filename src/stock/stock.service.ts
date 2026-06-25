@@ -3,6 +3,11 @@ import { schedule, ScheduledTask } from 'node-cron';
 
 import { FinnhubService } from './finnhub/finnhub.service';
 import { StockRepository } from './stock.repository';
+import { StockPriceResponseDto } from './dto/stock-price.response.dto';
+import {
+  PeriodicCheckResponseDto,
+  PeriodicCheckStatus,
+} from './dto/periodic-check.response.dto';
 
 const MOVING_AVERAGE_WINDOW = 10;
 const CHECK_SCHEDULE = '* * * * *';
@@ -16,7 +21,7 @@ export class StockService {
   private readonly logger = new Logger(StockService.name);
   private readonly tasks = new Map<string, ScheduledTask>();
 
-  async getStock(symbol: string) {
+  async getStock(symbol: string): Promise<StockPriceResponseDto> {
     const prices = await this.stockRepository.getPrices(
       symbol,
       MOVING_AVERAGE_WINDOW,
@@ -24,9 +29,7 @@ export class StockService {
 
     const latest = prices[0];
     if (!latest) {
-      throw new NotFoundException(
-        `No price data for "${symbol}". Start periodic checks first.`,
-      );
+      throw new NotFoundException(`No price data for "${symbol}". Start periodic checks first.`);
     }
 
     return {
@@ -37,11 +40,13 @@ export class StockService {
     };
   }
 
-  async startPeriodicCheck(symbol: string) {
+  async startPeriodicCheck(
+    symbol: string,
+  ): Promise<PeriodicCheckResponseDto> {
     if (this.tasks.has(symbol)) {
       return {
         symbol,
-        status: 'already running'
+        status: PeriodicCheckStatus.AlreadyRunning,
       };
     }
 
@@ -51,7 +56,10 @@ export class StockService {
 
     this.tasks.set(symbol, task);
     void this.checkPrice(symbol);
-    return { symbol, status: 'started' };
+    return { 
+      symbol,
+      status: PeriodicCheckStatus.Started
+    };
   }
 
   private calculateMovingAverage(prices: number[]): number {
