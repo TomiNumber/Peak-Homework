@@ -50,6 +50,11 @@ export class StockService {
       };
     }
 
+    const symbolExists = await this.finnhubService.symbolExists(symbol);
+    if (!symbolExists) {
+      throw new NotFoundException(`Unknown symbol "${symbol}".`);
+    }
+
     const task = schedule(CHECK_SCHEDULE, () => void this.checkPrice(symbol), {
       name: `stock-check-${symbol}`,
     });
